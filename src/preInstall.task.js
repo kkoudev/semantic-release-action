@@ -1,6 +1,6 @@
 const path = require('path');
 const core = require('@actions/core');
-const exec = require('./_exec');
+const execSync = require('child_process').execSync;
 
 /**
  * Pre-install extra dependecies
@@ -13,9 +13,10 @@ module.exports = async extras => {
 
   const _extras = extras.replace(/['"]/g, '').replace(/[\n\r]/g, ' ');
 
-  const { stdout, stderr } = await exec(`npm install ${_extras} --silent`, {
+  const result = execSync(`npm install ${_extras}`, {
+    encoding: 'utf-8',
     cwd: path.resolve(__dirname, '..')
   });
-  core.debug(stdout);
-  core.error(stderr);
+  core.debug(JSON.stringify(result));
+  core.error(JSON.stringify(result));
 };
